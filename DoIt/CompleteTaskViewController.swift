@@ -9,11 +9,8 @@
 import UIKit
 
 class CompleteTaskViewController: UIViewController {
-
-    var previousVC = TasksViewController()
     
     var task : Task = Task()
-    var taskIndex : Int = 0
     
     @IBOutlet weak var taskLabel: UILabel!
     
@@ -21,14 +18,15 @@ class CompleteTaskViewController: UIViewController {
         super.viewDidLoad()
 
         taskLabel.text = task.name
-        taskLabel?.text = (task.important ? "❗️" : "") + task.name
+        taskLabel?.text = (task.important ? "❗️" : "") + task.name!
 
     }
 
     @IBAction func completeTapped(_ sender: Any) {
-        previousVC.tasks.remove(at: taskIndex)
-        previousVC.tableView.reloadData()
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        context.delete(task)
         navigationController!.popViewController(animated: true)
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
     
     override func didReceiveMemoryWarning() {
